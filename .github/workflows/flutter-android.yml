@@ -21,10 +21,31 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Flutter doctor
         run: flutter doctor -v
+
+      - name: Install Android SDK components and accept licenses
+        env:
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+        run: |
+          set -e
+          echo "Detecting sdkmanager..."
+          if [ -x "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
+            SDKMANAGER="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          elif [ -x "$ANDROID_SDK_ROOT/tools/bin/sdkmanager" ]; then
+            SDKMANAGER="$ANDROID_SDK_ROOT/tools/bin/sdkmanager"
+          else
+            echo "sdkmanager not found, exiting"
+            exit 0
+          fi
+          echo "Installing essential SDK components (platform-tools, platforms;android-33, build-tools;33.0.2)"
+          yes | "$SDKMANAGER" --install "platform-tools" "platforms;android-33" "build-tools;33.0.2" || true
+          echo "Accepting SDK licenses"
+          yes | "$SDKMANAGER" --licenses || true
+          echo "Also running flutter doctor --android-licenses"
+          yes | flutter doctor --android-licenses || true
 
       - name: Install dependencies
         run: flutter pub get
