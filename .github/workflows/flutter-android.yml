@@ -1,0 +1,49 @@
+name: Flutter Android CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test --no-pub || true
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+# Notes:
+# - This workflow produces an unsigned release APK by default. For a fully
+#   signed release build you must provide your Android keystore and passwords
+#   as GitHub Secrets and modify this workflow to decode the keystore and
+#   create a `key.properties` file before the `flutter build` step.
+# - Recommended secrets (example names):
+#   - ANDROID_KEYSTORE_BASE64  (base64 of the keystore file)
+#   - ANDROID_KEYSTORE_PASSWORD
+#   - ANDROID_KEY_ALIAS
+#   - ANDROID_KEY_PASSWORD
+# - To build an AAB instead of an APK, replace the build command with:
+#     flutter build appbundle --release

@@ -1,6 +1,6 @@
 class Constant {
-  static const BASE_URL = "";  // Enter your base URL like :: http://182.168.19.35:5000/
-  static const SECRET_KEY = "";  // Enter your key like :: ssf45sd1fs5d1sdf1s56165s15sdf1s
+  static const BASE_URL = "https://sochio-backend.onrender.com/";  // Enter your base URL like :: http://182.168.19.35:5000/
+  static const SECRET_KEY = "sochio-api-secret-2024";  // Enter your key like :: ssf45sd1fs5d1sdf1s56165s15sdf1s
 
 
 
