@@ -23,35 +23,50 @@ class FlutterWaveService {
   GetAllPromoCodeController getAllPromoCodeController =
       Get.put(GetAllPromoCodeController());
   Future <void> handlePaymentInitialization(String amount) async {
+    // TODO: Fix Flutterwave integration - library version incompatible
+    // The current flutterwave_standard package version expects different API
+    // For now, this method logs and shows error
+    log("Flutter Wave Payment: Temporarily disabled due to API incompatibility");
+    displayToast(message: "Flutterwave payment temporarily unavailable. Please use Razorpay or Stripe.");
+    return;
+    
+    /* DISABLED CODE - Original implementation
     final Customer customer = Customer(
         name: "$editFirstName $editLastName",
         phoneNumber: '1234566677777',
         email: editEmail);
 
     log("Flutter Wave Start");
-    final Flutterwave flutterwave = Flutterwave(
-        context: Get.context!,
-        publicKey: flutterWaveId,
-        currency: "USD",
-        redirectUrl: "https://www.google.com/",
-        txRef: DateTime.now().microsecond.toString(),
-        amount: amount,
-        customer: customer,
-        paymentOptions: "ussd, card, barter, payattitude",
-        customization: Customization(title: "Erashop"),
-        isTestMode: true);
-    log("Flutter Wave Finish");
-    final ChargeResponse response = await flutterwave.charge();
-    log("Flutter Wave ----------- ");
-    displayToast(message: response.status.toString());
+    try {
+      final Flutterwave flutterwave = Flutterwave(
+          publicKey: flutterWaveId,
+          currency: "USD",
+          redirectUrl: "https://www.google.com/",
+          txRef: DateTime.now().microsecond.toString(),
+          amount: amount,
+          customer: customer,
+          paymentOptions: "ussd, card, barter, payattitude",
+          customization: Customization(title: "Erashop"),
+          isTestMode: true);
+      log("Flutter Wave Finish");
+      // final ChargeResponse response = await flutterwave.charge();
+      // Disabled: charge() API changed in newer version
+      // Needs investigation of correct Flutterwave API
+      log("Flutter Wave ----------- ");
+      // displayToast(message: response.status.toString());
 
-    if (response.success == true) {
-      log("flutter wave success full payment");
-      await _handlePaymentSuccess();
+      // if (response.success == true) {
+      //   log("flutter wave success full payment");
+      //   await _handlePaymentSuccess();
+      // }
+
+      // log("Flutter Wave Response :: ${response.toString()}");
+      // log("Flutter Wave Json Response :: ${response.toJson()}");
+    } catch (e) {
+      log("Flutter Wave Error: $e");
+      displayToast(message: "Payment error: ${e.toString()}");
     }
-
-    log("Flutter Wave Response :: ${response.toString()}");
-    log("Flutter Wave Json Response :: ${response.toJson()}");
+    */
   }
 
   Future<void> _handlePaymentSuccess() async {
